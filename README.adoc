@@ -30,7 +30,7 @@ But we also have to limit those preallocation so as to use as little memory as p
 . Basic implementation of the algorithm to manage the requested memory blocks.
 
 == Implementation
-
+=== Data structures
 Currently I've created a sort of chained list that I represent under the form of a global variable. +
 It allows me to determine exactly which chunk of memory is being freed and what is it's size.
 Below you can find a diagram that would illustrate its shape if it was a class.
@@ -44,6 +44,24 @@ The free function can then defragment the chunk and reassign it back to the free
 the zone.
 
 image::doc/mem_zone.svg[]
+
+=== Performance
+
+To maximize the efficiency of the memory preallocation I catergoized the chunks and zones into 3 +
+Small Medium and Large. As a rule of thumb, at least 100 allocations should be availible inside +
+the Small and Medium zones. Larger chunks are stored in a zone of their own. 
+
+I've decided that the small chunks maximum size is 128 bytes. It might seem very small but we +
+have to remember that we need a 100 of them per zone and we can have multiple zones. +
+So already if we have 100 * 128 bytes we end up with with 1.28 kb per zone. Except that +
+each chunk needs it's metadata the equation is instead (128 + 32) * 100 which gives us 16kb.
+
+=== Malloc's algorithm
+
+As the original malloc lacks a proper and efficient way to allocate memory I've decided to search one that suit my needs better. I was able to find one called the first fit strategy. +
+It's quite simple I try to find the first memory zone for the proper size that can hold +
+the requested allocation. If none are found I create a new zone of similar size as the other. +
+Due to the memory zones being split it's not a 1:1 first fit, but instead a refined first fit ascreated by Andrew Chi-Chih Yao. 
 
 == Lexic
 Memory zone:: Also called regions, are ranges of addresses claimed by mmap(2).
