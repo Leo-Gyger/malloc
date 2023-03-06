@@ -47,7 +47,7 @@ image::doc/mem_zone.svg[]
 
 === Performance
 
-To maximize the efficiency of the memory preallocation I catergoized the chunks and zones into 3 +
+To maximize the efficiency of the memory preallocation I categorized the chunks and zones into 3 +
 Small Medium and Large. As a rule of thumb, at least 100 allocations should be availible inside +
 the Small and Medium zones. Larger chunks are stored in a zone of their own. 
 
