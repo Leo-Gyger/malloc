@@ -37,6 +37,14 @@ Below you can find a diagram that would illustrate its shape if it was a class.
 
 image::doc/chunk.svg[]
 
+A broader definition of how malloc works is showed below. Basically the user receives only +
+a part of the struct chunk as the metadata is contained before the Data, when the Chunk is +
+being freed the struct is being recomposed from the bytes contained before the pointer. +
+The free function can then defragment the chunk and reassign it back to the free space of +
+the zone.
+
+image::doc/mem_zone.svg[]
+
 == Lexic
 Memory zone:: Also called regions, are ranges of addresses claimed by mmap(2).
 Anonymous mapping:: Maps an area of the process's virtual memory not backed by any file. +
