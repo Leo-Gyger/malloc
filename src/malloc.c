@@ -5,18 +5,18 @@
 #include <string.h>
 #include <sys/mman.h>
 #include <unistd.h>
+#include "../header/malloc.h"
+t_zone 	*anchor = 0;
 
-intptr_t *zone = 0;
-
-intptr_t *
+t_zone *
 get_last(void)
 {
-	intptr_t *tmp = zone;
+	t_zone *tmp = anchor;
 	while (tmp)
 	{
-		if (tmp[1] == 0)
+		if (tmp->next == 0)
 			return (tmp);
-		tmp = (intptr_t *)tmp[1];
+		tmp = tmp->next;
 	}
 	return (NULL);
 }
@@ -24,69 +24,73 @@ get_last(void)
 void *
 ft_malloc(size_t size)
 {
-	intptr_t *n_chunk, *last;
-	intptr_t  len = size + (sizeof(intptr_t) * 3);
+	t_zone	*last, *n_zone;
+	size_t	len;
+	len = size + sizeof(t_zone);
 
-	if (!zone)
+	if (!anchor)
 	{
-		zone = mmap(0, len, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, -1, 0);
-		if (zone == MAP_FAILED)
+		anchor = mmap(0, len, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, -1, 0);
+		if (anchor == MAP_FAILED)
 		{
 			fprintf(stderr, "mmap error\n");
 			return (0);
 		}
-		zone[0] = len;
-		zone[1] = 0;
-		zone[2] = 0;
-		return zone + 3;
+		anchor->next = 0;
+		anchor->prev = 0;
+		anchor->t_size = len;
+		anchor->fr_size = 0;
+		anchor->type = 3;
+		return anchor + sizeof(t_zone);
 	}
 	else
 	{
 		last = get_last();
-		n_chunk = mmap(0, len, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-		if (n_chunk == MAP_FAILED)
+		n_zone = mmap(0, len, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+		if (n_zone == MAP_FAILED)
 		{
 			fprintf(stderr, "mmap error\n");
 			return (0);
 		}
-		n_chunk[0] = len;
-		last[1] = (intptr_t)n_chunk;
-		n_chunk[1] = 0;
-		n_chunk[2] = (intptr_t)last;
-		return n_chunk + 3;
+		n_zone->t_size = len;
+		n_zone->fr_size = 0;
+		n_zone->type = 3;
+		last->next = n_zone;
+		n_zone->next = 0;
+		n_zone->prev = last;
+		return n_zone + sizeof(t_zone);
 	}
 }
 
 void
 ft_free(void *ptr)
 {
-	intptr_t  tmp;
-	intptr_t *prev, *next, *plen;
+	t_zone   *prev, *next, *plen;
 
 	if (!ptr)
 	{
 		perror("Trying to free void");
 		return;
 	}
-	plen = ptr - (sizeof(intptr_t) * 3);
-	if (plen == zone)
+	plen = ptr - 2304;
+	if (plen == anchor)
 	{
-		tmp = plen[1];
-		if (munmap(plen, *plen))
+		next = plen->next;
+		if (munmap(plen, plen->t_size))
 		{
 			perror((strerror(errno)));
-			zone = 0;
+			anchor = 0;
 		}
-		zone = (intptr_t *)tmp;
+		anchor = next;
 	}
 	else
 	{
-		prev = (intptr_t *)plen[2];
-		prev[1] = plen[1];
-		next = (intptr_t *)prev[1];
+		prev = plen->prev;
+		prev->next = plen->next;
+		next = prev->next;
 		if (next)
-			next[2] = (intptr_t)prev;
-		if (munmap(plen, *plen))
+			next->prev = prev;
+		if (munmap(plen, plen->t_size))
 		{
 			perror(strerror(errno));
 			return;

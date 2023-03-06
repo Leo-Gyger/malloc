@@ -2,8 +2,8 @@ NAME =	malloc
 CC =	gcc
 DB =	lldb
 
-CFLAGS =	-Wall -Wextra -Werror
-OFLAGS = 	-fsanitize=address
+CFLAGS =	-Wall -Wextra -Werror -g
+#OFLAGS = 	-fsanitize=address
 
 SRCD =	src
 SRCS = src/malloc.c
@@ -24,7 +24,7 @@ db: $(NAME)
 clean:
 	rm -rf $(OBJD)
 fclean: clean
-	@ rm -rf %(NAME)
+	@rm -rf $(NAME)
 
 re:	fclean all
 
