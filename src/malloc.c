@@ -1,6 +1,5 @@
 #include "malloc.h"
 
-
 t_zone *anchor = 0;
 t_zone *
 get_last(void)
@@ -15,89 +14,56 @@ get_last(void)
 	return (NULL);
 }
 
-void *tiny_allocation(size_t size)
+void *
+tiny_allocation(size_t size)
 {
-//	t_chunk *blk;
-	
+	t_chunk *blk;
+	t_zone	*tmp;
+
 	if (!anchor)
 	{
-		anchor = create_zone(size);
+		anchor = create_zone(TINY_ZONE_SIZE);
 		anchor->type = 1;
 	}
-
-	return NULL;
+	tmp = get_free(TINY, size);
+	if (!tmp)
+		tmp = create_zone(TINY_ZONE_SIZE);
+	blk = crt_new(size, tmp);
+	tmp->blk_cnt++;
+	return (void *)blk + sizeof(t_chunk);
 }
-
 
 void *
 big_allocation(size_t size)
 {
-	t_zone	*last, *n_zone;
+	t_zone *n_zone;
 
 	if (!anchor)
 	{
 		anchor = create_zone(size);
 		anchor->type = 3;
-		return (void*)anchor + sizeof(t_zone);
+		return (void *)anchor + sizeof(t_zone);
 	}
 	else
 	{
-		last = get_last();
 		n_zone = create_zone(size);
 		n_zone->type = 3;
-		last->next = n_zone;
-		n_zone->prev = last;
 		return (void *)n_zone + sizeof(t_zone);
 	}
 }
 
-void *ft_malloc(size_t size)
+void *
+ft_malloc(size_t size)
 {
 	if (size <= 128)
-		printf("tiny WIP\n");
+		return tiny_allocation(size);
 	else
 		return big_allocation(size);
 	return 0;
 }
 
 void
-ft_free(void *ptr)
-{
-	t_zone   *prev, *next, *plen;
-
-	if (!ptr)
-	{
-		perror("Trying to free void");
-		return;
-	}
-	printf("%p %p\n", ptr, anchor);
-	plen = ptr - sizeof(t_zone);
-	if (plen == anchor)
-	{
-		next = plen->next;
-		if (munmap(plen, plen->t_size))
-		{
-			perror((strerror(errno)));
-			anchor = 0;
-		}
-		anchor = next;
-	}
-	else
-	{
-		prev = plen->prev;
-		prev->next = plen->next;
-		next = prev->next;
-		if (next)
-			next->prev = prev;
-		if (munmap(plen, plen->t_size))
-		{
-			perror(strerror(errno));
-			return;
-		}
-	}
-}
-
-void test1(void)
+test1(void)
 {
 	char *str = ft_malloc(7);
 	char *t_str = malloc(7);
@@ -122,7 +88,6 @@ void test1(void)
 	ft_free(str2);
 	free(t_str2);
 }
-
 
 int
 main()

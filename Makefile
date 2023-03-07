@@ -3,11 +3,13 @@ CC =	gcc
 DB =	lldb
 
 CFLAGS =	-Wall -Wextra -Werror -g
-#OFLAGS = 	-fsanitize=address
+OFLAGS = 	-fsanitize=address
 
 SRCD =	src
 SRCS = src/malloc.c
 SRCS += src/zone.c
+SRCS += src/chunk.c
+SRCS += src/free.c
 
 INCD = header
 INCS = header/malloc.h
