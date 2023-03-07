@@ -7,6 +7,11 @@ CFLAGS =	-Wall -Wextra -Werror -g
 
 SRCD =	src
 SRCS = src/malloc.c
+SRCS += src/zone.c
+
+INCD = header
+INCS = header/malloc.h
+
 OBJD =	obj
 OBJS =	$(patsubst $(SRCD)/%.c, $(OBJD)/%.o, $(SRCS))
 
@@ -16,7 +21,7 @@ $(NAME):	$(OBJS)
 
 $(OBJD)/%.o: $(SRCD)/%.c
 	@mkdir -p $(@D)
-	@$(CC) -c $(<) $(CFLAGS) -o $(@)
+	@$(CC) -c $(<) $(CFLAGS) -o $(@) -I $(INCD)
 
 db: $(NAME)
 	$(DB) $(NAME)

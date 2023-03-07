@@ -1,13 +1,7 @@
-#include <errno.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/mman.h>
-#include <unistd.h>
-#include "../header/malloc.h"
-t_zone 	*anchor = 0;
+#include "malloc.h"
 
+
+t_zone *anchor = 0;
 t_zone *
 get_last(void)
 {
@@ -21,45 +15,49 @@ get_last(void)
 	return (NULL);
 }
 
+void *tiny_allocation(size_t size)
+{
+//	t_chunk *blk;
+	
+	if (!anchor)
+	{
+		anchor = create_zone(size);
+		anchor->type = 1;
+	}
+
+	return NULL;
+}
+
+
 void *
-ft_malloc(size_t size)
+big_allocation(size_t size)
 {
 	t_zone	*last, *n_zone;
-	size_t	len;
-	len = size + sizeof(t_zone);
 
 	if (!anchor)
 	{
-		anchor = mmap(0, len, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, -1, 0);
-		if (anchor == MAP_FAILED)
-		{
-			fprintf(stderr, "mmap error\n");
-			return (0);
-		}
-		anchor->next = 0;
-		anchor->prev = 0;
-		anchor->t_size = len;
-		anchor->fr_size = 0;
+		anchor = create_zone(size);
 		anchor->type = 3;
-		return anchor + sizeof(t_zone);
+		return (void*)anchor + sizeof(t_zone);
 	}
 	else
 	{
 		last = get_last();
-		n_zone = mmap(0, len, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-		if (n_zone == MAP_FAILED)
-		{
-			fprintf(stderr, "mmap error\n");
-			return (0);
-		}
-		n_zone->t_size = len;
-		n_zone->fr_size = 0;
+		n_zone = create_zone(size);
 		n_zone->type = 3;
 		last->next = n_zone;
-		n_zone->next = 0;
 		n_zone->prev = last;
-		return n_zone + sizeof(t_zone);
+		return (void *)n_zone + sizeof(t_zone);
 	}
+}
+
+void *ft_malloc(size_t size)
+{
+	if (size <= 128)
+		printf("tiny WIP\n");
+	else
+		return big_allocation(size);
+	return 0;
 }
 
 void
@@ -72,7 +70,8 @@ ft_free(void *ptr)
 		perror("Trying to free void");
 		return;
 	}
-	plen = ptr - 2304;
+	printf("%p %p\n", ptr, anchor);
+	plen = ptr - sizeof(t_zone);
 	if (plen == anchor)
 	{
 		next = plen->next;
@@ -98,17 +97,36 @@ ft_free(void *ptr)
 	}
 }
 
+void test1(void)
+{
+	char *str = ft_malloc(7);
+	char *t_str = malloc(7);
+	strcpy(str, "Hello ");
+	strcpy(t_str, "Hello ");
+	t_str[6] = 0;
+	str[6] = 0;
+	char *str2 = ft_malloc(7);
+	char *t_str2 = malloc(7);
+	strcpy(str2, "World\n");
+	strcpy(t_str2, "World\n");
+	str2[6] = 0;
+	t_str2[6] = 0;
+	printf("----ft_malloc----\n");
+	printf("content: %s%s", str, str2);
+	printf("addresses: %p %p\n", str, str2);
+	printf("----malloc----\n");
+	printf("content: %s%s", t_str, t_str2);
+	printf("addresses: %p %p\n", t_str, t_str2);
+	ft_free(str);
+	free(t_str);
+	ft_free(str2);
+	free(t_str2);
+}
+
+
 int
 main()
 {
-	char *str = ft_malloc(7);
-	strcpy(str, "Hello ");
-	str[6] = 0;
-	char *str2 = ft_malloc(7);
-	strcpy(str2, "World\n");
-	str2[6] = 0;
-	printf("%s%s", str, str2);
-	ft_free(str);
-	ft_free(str2);
+	test1();
 	return 0;
 }
