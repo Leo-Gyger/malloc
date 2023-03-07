@@ -77,6 +77,7 @@ test1(void)
 	strcpy(t_str2, "World\n");
 	str2[6] = 0;
 	t_str2[6] = 0;
+	char *test = ft_malloc(129);
 	printf("----ft_malloc----\n");
 	printf("content: %s%s", str, str2);
 	printf("addresses: %p %p\n", str, str2);
@@ -84,6 +85,7 @@ test1(void)
 	printf("content: %s%s", t_str, t_str2);
 	printf("addresses: %p %p\n", t_str, t_str2);
 	ft_free(str);
+	ft_free(test);
 	free(t_str);
 	ft_free(str2);
 	free(t_str2);

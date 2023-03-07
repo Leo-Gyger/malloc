@@ -7,7 +7,19 @@ get_chunk(void *ptr)
 	chnk = ptr - sizeof(t_chunk);
 	return (chnk);
 }
+short int
+get_type(void *ptr)
+{
+	t_zone *tmp = anchor;
 
+	while (tmp)
+	{
+		if (ptr < (void *)tmp + tmp->t_size && ptr > (void *)tmp)
+			return (tmp->type);
+		tmp = tmp->next;
+	}
+	return (4);
+}
 void
 free_zone(t_zone *plen)
 {
@@ -64,6 +76,12 @@ void
 ft_free(void *ptr)
 {
 	t_chunk *chnk;
+
+	if (get_type(ptr) == 3)
+	{
+		free_zone(ptr - sizeof(t_zone));
+		return;
+	}
 	if (!ptr)
 	{
 		perror("Trying to free void");
