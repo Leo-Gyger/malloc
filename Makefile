@@ -1,5 +1,4 @@
 NAME =	malloc
-CC =	gcc
 DB =	lldb
 
 CFLAGS =	-Wall -Wextra -Werror -g
@@ -10,6 +9,7 @@ SRCS = src/malloc.c
 SRCS += src/zone.c
 SRCS += src/chunk.c
 SRCS += src/free.c
+SRCS += src/realloc.c
 
 INCD = header
 INCS = header/malloc.h

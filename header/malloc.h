@@ -36,5 +36,9 @@ t_zone	*create_zone(size_t);
 t_zone	*get_free(short int, size_t);
 t_zone	*get_last();
 t_chunk *crt_new(size_t, t_zone *);
-void	 ft_free(void *);
+t_chunk	*get_chunk(void*);
+void	ft_free(void *);
+void	*ft_realloc(void *, size_t);
+void	*ft_malloc(size_t);
+
 #endif

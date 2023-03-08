@@ -95,5 +95,14 @@ int
 main()
 {
 	test1();
+	char *str = ft_malloc(7);
+	char *test = ft_malloc(100);
+	strcpy(str, "hello ");
+	printf("address pre realloc: %p\n", str);
+	str = ft_realloc(str, 88);
+	strcpy(str + strlen(str), "World\n");
+	printf("realloc content/address: %s %p\n", str, str);
+	ft_free(str);
+	ft_free(test);
 	return 0;
 }
