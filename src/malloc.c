@@ -79,8 +79,8 @@ big_allocation(size_t size)
 void *
 malloc(size_t size)
 {
-	write(2, "Hello world\n", 12);
-	size = (size + 15) & ~15;
+	fprintf(stderr, "size: %zu\n", size);
+	//size = (size + 15) & ~15;
 	if (size < TINY_ZONE_SIZE / 128)
 		return tiny_allocation(size);
 	else if (size < MEDIUM_ZONE_SIZE / 128)

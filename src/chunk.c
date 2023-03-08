@@ -31,6 +31,7 @@ crt_new(size_t size, t_zone *zone)
 		if (first->size >= size && !first->used)
 		{
 			first->used = 1;
+			fprintf(stderr, "found new one\n");
 			return (first);
 		}
 		first = first->next;

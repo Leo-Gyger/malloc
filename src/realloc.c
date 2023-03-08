@@ -53,6 +53,7 @@ void	*realloc(void	*ptr, size_t size)
 
 
 	size = (size + 15) & ~15;
+	fprintf(stderr, "\n\realloc called %zu\n\n", size);
 	if (!ptr)
 		ptr = malloc(size);
 	else

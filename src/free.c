@@ -59,12 +59,12 @@ free_cnk(t_chunk *chnk)
 	zone = (void *)prev - sizeof(t_zone);
 	zone->fr_size += chnk->size;
 	--zone->blk_cnt;
-	if (chnk->prev && !chnk->prev->used)
+/*	if (chnk->prev && !chnk->prev->used)
 	{
 		prev = chnk->prev;
 		prev->size += chnk->size + sizeof(t_chunk);
 		prev->next = chnk->next;
-	}
+	} */
 	if (zone->blk_cnt == 0)
 		free_zone(zone);
 	return;
@@ -74,7 +74,8 @@ void
 free(void *ptr)
 {
 	t_chunk *chnk;
-
+	
+	//show_alloc_mem();
 	if (get_type(ptr) == 3)
 	{
 		free_zone(ptr - sizeof(t_zone));
@@ -85,6 +86,7 @@ free(void *ptr)
 		return;
 	}
 	chnk = get_chunk(ptr);
+	fprintf(stderr, "free: %zu\n", chnk->size);
 	if (chnk)
 		free_cnk(chnk);
 }

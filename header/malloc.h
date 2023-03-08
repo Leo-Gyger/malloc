@@ -3,8 +3,9 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #include <stdint.h>
-#define TINY_ZONE_SIZE ((size_t)(4 * getpagesize()))
-#define MEDIUM_ZONE_SIZE ((size_t)(32 * getpagesize()))
+#include <stdio.h>
+#define TINY_ZONE_SIZE ((size_t)(2 * getpagesize()))
+#define MEDIUM_ZONE_SIZE ((size_t)(4 * getpagesize()))
 #define TINY 1
 #define MEDIUM 2
 #define BIG 3
