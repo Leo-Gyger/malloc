@@ -1,14 +1,12 @@
 #ifndef MALLOC_H
 #define MALLOC_H
-#include <errno.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <sys/mman.h>
 #include <unistd.h>
-#define TINY_ZONE_SIZE ((128 + 32) * 100)
+#include <stdint.h>
+#define TINY_ZONE_SIZE ((size_t)(4 * getpagesize()))
+#define MEDIUM_ZONE_SIZE ((size_t)(32 * getpagesize()))
 #define TINY 1
+#define MEDIUM 2
 #define BIG 3
 // A zone is a range of address claimed directly from the virtual memory
 typedef struct s_zone
@@ -37,8 +35,8 @@ t_zone	*get_free(short int, size_t);
 t_zone	*get_last();
 t_chunk *crt_new(size_t, t_zone *);
 t_chunk	*get_chunk(void*);
-void	ft_free(void *);
-void	*ft_realloc(void *, size_t);
-void	*ft_malloc(size_t);
-
+void	free(void *);
+void	*realloc(void *, size_t);
+void	*malloc(size_t);
+void	show_alloc_mem();
 #endif

@@ -29,7 +29,6 @@ free_zone(t_zone *plen)
 		next = plen->next;
 		if (munmap(plen, plen->t_size))
 		{
-			perror((strerror(errno)));
 			anchor = 0;
 		}
 		anchor = next;
@@ -43,7 +42,6 @@ free_zone(t_zone *plen)
 			next->prev = prev;
 		if (munmap(plen, plen->t_size))
 		{
-			perror(strerror(errno));
 			return;
 		}
 	}
@@ -73,7 +71,7 @@ free_cnk(t_chunk *chnk)
 }
 
 void
-ft_free(void *ptr)
+free(void *ptr)
 {
 	t_chunk *chnk;
 
@@ -84,7 +82,6 @@ ft_free(void *ptr)
 	}
 	if (!ptr)
 	{
-		perror("Trying to free void");
 		return;
 	}
 	chnk = get_chunk(ptr);

@@ -45,14 +45,16 @@ t_chunk	*extend_mem(t_zone *zone, t_chunk *chnk, size_t size)
 	return (0);
 }
 
-void	*ft_realloc(void	*ptr, size_t size)
+void	*realloc(void	*ptr, size_t size)
 {
 	t_zone	*zone;
 	t_chunk	*chnk;
 	void	*n_ptr;
 
+
+	size = (size + 15) & ~15;
 	if (!ptr)
-		ptr = ft_malloc(size);
+		ptr = malloc(size);
 	else
 	{
 		zone = get_zone(ptr);
@@ -66,10 +68,9 @@ void	*ft_realloc(void	*ptr, size_t size)
 		}
 		else
 		{
-			n_ptr = ft_malloc(size);
+			n_ptr = malloc(size);
 			if (!n_ptr)
 				return (0);
-			memmove(n_ptr, ptr, chnk->size);
 			return (n_ptr);
 		}
 	}

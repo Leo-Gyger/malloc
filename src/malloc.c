@@ -27,7 +27,31 @@ tiny_allocation(size_t size)
 	}
 	tmp = get_free(TINY, size);
 	if (!tmp)
+	{
 		tmp = create_zone(TINY_ZONE_SIZE);
+		tmp->type = TINY;
+	}
+	blk = crt_new(size, tmp);
+	tmp->blk_cnt++;
+	return (void *)blk + sizeof(t_chunk);
+}
+void *
+medium_allocation(size_t size)
+{
+	t_chunk *blk;
+	t_zone	*tmp;
+
+	if (!anchor)
+	{
+		anchor = create_zone(MEDIUM_ZONE_SIZE);
+		anchor->type = 2;
+	}
+	tmp = get_free(MEDIUM, size);
+	if (!tmp)
+	{
+		tmp = create_zone(MEDIUM_ZONE_SIZE);
+		tmp->type = MEDIUM;
+	}
 	blk = crt_new(size, tmp);
 	tmp->blk_cnt++;
 	return (void *)blk + sizeof(t_chunk);
@@ -53,15 +77,19 @@ big_allocation(size_t size)
 }
 
 void *
-ft_malloc(size_t size)
+malloc(size_t size)
 {
-	if (size <= 128)
+	write(2, "Hello world\n", 12);
+	size = (size + 15) & ~15;
+	if (size < TINY_ZONE_SIZE / 128)
 		return tiny_allocation(size);
+	else if (size < MEDIUM_ZONE_SIZE / 128)
+		return medium_allocation(size);
 	else
 		return big_allocation(size);
 	return 0;
 }
-
+/*
 void
 test1(void)
 {
@@ -84,14 +112,19 @@ test1(void)
 	printf("----malloc----\n");
 	printf("content: %s%s", t_str, t_str2);
 	printf("addresses: %p %p\n", t_str, t_str2);
+	char	*medium = ft_malloc(300);
+	char	*big = ft_malloc(2000);
+	show_alloc_mem();
 	ft_free(str);
+	ft_free(medium);
+	ft_free(big);
 	ft_free(test);
 	free(t_str);
 	ft_free(str2);
 	free(t_str2);
-}
+} */
 
-int
+/*int
 main()
 {
 	test1();
@@ -105,4 +138,4 @@ main()
 	ft_free(str);
 	ft_free(test);
 	return 0;
-}
+} */

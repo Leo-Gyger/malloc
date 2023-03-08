@@ -1,15 +1,15 @@
-NAME =	malloc
+NAME =	malloc.so
 DB =	lldb
 
-CFLAGS =	-Wall -Wextra -Werror -g
-OFLAGS = 	-fsanitize=address
-
+CFLAGS =	-Wall -Wextra -Werror -fPIC -g
+OFLAGS = 	-shared
 SRCD =	src
 SRCS = src/malloc.c
 SRCS += src/zone.c
 SRCS += src/chunk.c
 SRCS += src/free.c
 SRCS += src/realloc.c
+SRCS += src/log.c
 
 INCD = header
 INCS = header/malloc.h
