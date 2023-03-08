@@ -1,4 +1,8 @@
 .idea
 .DS_Store
+a.out
+malloc.so
+malloc.dylib
+main.c
 malloc
 obj/
