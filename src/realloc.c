@@ -6,7 +6,7 @@ t_zone	*get_zone(void	*ptr)
 
 	while (ret)
 	{
-		if (ptr < (void*)ret + ret->t_size && ptr > (void*)ret)
+		if (ptr < (void*)ret + ret->t_size && ptr > (void*)ret + sizeof(t_zone))
 			return (ret);
 		ret = ret->next;
 	}
@@ -53,21 +53,23 @@ void	*realloc(void	*ptr, size_t size)
 
 
 	size = (size + 15) & ~15;
-	fprintf(stderr, "\n\realloc called %zu\n\n", size);
 	if (!ptr)
+	{
 		ptr = malloc(size);
+		return (ptr);
+	}
 	else
 	{
 		zone = get_zone(ptr);
 		chnk = get_chunk(ptr);
-		if (zone->fr_size >= size)
+		if (zone && zone->fr_size >= size)
 		{
-			if (chnk->size <= size)
+			if (chnk->size >= size)
 				return ((void*)chnk + sizeof(t_chunk));
 			if (extend_mem(zone, chnk, size))
 				return ((void*)chnk + sizeof(t_chunk));
 		}
-		else
+		if (zone->type != TINY || zone->type != BIG || zone->type != MEDIUM)
 		{
 			n_ptr = malloc(size);
 			if (!n_ptr)

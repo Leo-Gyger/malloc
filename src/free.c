@@ -86,7 +86,6 @@ free(void *ptr)
 		return;
 	}
 	chnk = get_chunk(ptr);
-	fprintf(stderr, "free: %zu\n", chnk->size);
 	if (chnk)
 		free_cnk(chnk);
 }
