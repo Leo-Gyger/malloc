@@ -52,7 +52,6 @@ void	*realloc(void	*ptr, size_t size)
 	void	*n_ptr;
 
 
-	size = (size + 15) & ~15;
 	if (!ptr)
 	{
 		ptr = malloc(size);
@@ -69,7 +68,7 @@ void	*realloc(void	*ptr, size_t size)
 			if (extend_mem(zone, chnk, size))
 				return ((void*)chnk + sizeof(t_chunk));
 		}
-		if (zone->type != TINY || zone->type != BIG || zone->type != MEDIUM)
+		if ( !zone || zone->type != TINY || zone->type != BIG || zone->type != MEDIUM)
 		{
 			n_ptr = malloc(size);
 			if (!n_ptr)
@@ -77,6 +76,7 @@ void	*realloc(void	*ptr, size_t size)
 			return (n_ptr);
 		}
 	}
+	fprintf(stderr, "error realloc\n");
 	return (NULL);
 }
 

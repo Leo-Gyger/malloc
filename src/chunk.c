@@ -5,7 +5,7 @@ get_first(t_zone *zone)
 {
 	t_chunk *tmp;
 	void	*mem = zone;
-	if (zone->blk_cnt == 0)
+	if (!zone || zone->blk_cnt == 0)
 	{
 		return (NULL);
 	}

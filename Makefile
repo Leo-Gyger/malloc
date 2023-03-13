@@ -1,6 +1,7 @@
 NAME =	malloc.so
 DB =	lldb
 
+CC = gcc
 CFLAGS =	-Wall -Wextra -Werror -fPIC -g
 OFLAGS = 	-shared
 SRCD =	src

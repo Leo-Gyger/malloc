@@ -11,7 +11,7 @@ short int
 get_type(void *ptr)
 {
 	t_zone *tmp = anchor;
-
+	
 	while (tmp)
 	{
 		if (ptr < (void *)tmp + tmp->t_size && ptr > (void *)tmp)
@@ -20,6 +20,7 @@ get_type(void *ptr)
 	}
 	return (4);
 }
+
 void
 free_zone(t_zone *plen)
 {
@@ -76,13 +77,17 @@ free(void *ptr)
 	t_chunk *chnk;
 	
 	//show_alloc_mem();
+	
+	if (!ptr)
+		return ;
 	if (get_type(ptr) == 3)
 	{
 		free_zone(ptr - sizeof(t_zone));
 		return;
 	}
-	if (!ptr)
+	if (get_type(ptr) == 4)
 	{
+//		fprintf(stderr, "error free\n");
 		return;
 	}
 	chnk = get_chunk(ptr);
