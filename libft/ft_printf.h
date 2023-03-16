@@ -6,7 +6,7 @@
 /*   By: lgyger <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/25 19:35:19 by lgyger            #+#    #+#             */
-/*   Updated: 2023/03/16 16:29:15 by lgyger           ###   ########.fr       */
+/*   Updated: 2023/03/16 16:40:38 by lgyger           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,8 @@
 # define FT_PRINTF_H
 # include <stdint.h>
 # include <unistd.h>
-# include <stdlib.h>
 # include <stdio.h>
-
+#include "../header/malloc.h"
 void	ft_putchar(char c, int *p);
 void	ft_putstr(char *str, int *p, int flag, int flag2);
 char	*ft_itoa(int n);
