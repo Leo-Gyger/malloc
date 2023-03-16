@@ -45,6 +45,16 @@ t_chunk	*extend_mem(t_zone *zone, t_chunk *chnk, size_t size)
 	return (0);
 }
 
+void	*reallocf(void *ptr, size_t size)
+{
+	void	*ret = realloc(ptr, size);
+	
+	fprintf(stderr, "test\n");
+	if (!ret)
+		free(ptr);
+	return (0);
+}
+
 void	*realloc(void	*ptr, size_t size)
 {
 	t_zone	*zone;
@@ -70,9 +80,12 @@ void	*realloc(void	*ptr, size_t size)
 		}
 		if ( !zone || zone->type != TINY || zone->type != BIG || zone->type != MEDIUM)
 		{
+			fprintf(stderr, "realloc but ptr not ours\n");
 			n_ptr = malloc(size);
 			if (!n_ptr)
 				return (0);
+			memcpy(n_ptr, ptr, size);
+			free(ptr);
 			return (n_ptr);
 		}
 	}

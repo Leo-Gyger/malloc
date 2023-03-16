@@ -1,6 +1,16 @@
 #include "malloc.h"
+#include <stdlib.h>
 
 t_zone *anchor = 0;
+
+void	crash(int sig)
+{
+	(void)sig;
+//	show_alloc_mem();
+	fprintf(stderr, "crash\n");
+	exit(1);
+}
+
 t_zone *
 get_last(void)
 {
@@ -76,10 +86,23 @@ big_allocation(size_t size)
 	}
 }
 
+void	*calloc(size_t count, size_t size)
+{
+	return big_allocation(size * count);
+}
+
 void *
 malloc(size_t size)
 {
-	//size = (size + 15) & ~15;
+	if (!size)
+	{
+		fprintf(stderr, "\n\n\ntest\n");
+		return 0;
+	}
+	if (getenv("MALLOC_FORCE_MMAP"))
+		return big_allocation(size);
+//	size = (size + 15) & ~15;
+	signal(SIGSEGV,crash); 
 	if (size < TINY_ZONE_SIZE / 128)
 		return tiny_allocation(size);
 	else if (size < MEDIUM_ZONE_SIZE / 128)
@@ -87,6 +110,7 @@ malloc(size_t size)
 	else
 		return big_allocation(size);
 	fprintf(stderr, "malloc error\nsize: %zu\n", size);
+	errno = ENOMEM;
 	return 0;
 }
 /*

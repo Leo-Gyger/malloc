@@ -2,7 +2,7 @@
 .DS_Store
 a.out
 a.out.dSYM
-malloc.so
+*.so
 malloc.dylib
 main.c
 malloc

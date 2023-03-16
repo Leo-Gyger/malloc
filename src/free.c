@@ -25,10 +25,14 @@ void
 free_zone(t_zone *plen)
 {
 	t_zone *prev, *next;
+	size_t	size = plen->t_size;
+
 	if (plen == anchor)
 	{
 		next = plen->next;
-		if (munmap(plen, plen->t_size))
+		if (getenv("MallocScribble"))
+			memset(plen, 0x55, size);
+		if (munmap(plen,size))
 		{
 			anchor = 0;
 		}
@@ -41,7 +45,9 @@ free_zone(t_zone *plen)
 		next = prev->next;
 		if (next)
 			next->prev = prev;
-		if (munmap(plen, plen->t_size))
+		if (getenv("MallocScribble"))
+			memset(plen, 0x55, size);
+		if (munmap(plen,size))
 		{
 			return;
 		}
@@ -68,6 +74,8 @@ free_cnk(t_chunk *chnk)
 	} */
 	if (zone->blk_cnt == 0)
 		free_zone(zone);
+	else if (getenv("MallocScribble"))
+		memset(chnk, 0x55, chnk->size);
 	return;
 }
 

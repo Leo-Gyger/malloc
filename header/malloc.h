@@ -2,8 +2,13 @@
 #define MALLOC_H
 #include <sys/mman.h>
 #include <unistd.h>
+#include <errno.h>
+#include <signal.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+#include "../libft/headers/libft.h"
 #define TINY_ZONE_SIZE ((size_t)(2 * getpagesize()))
 #define MEDIUM_ZONE_SIZE ((size_t)(4 * getpagesize()))
 #define TINY 1
@@ -30,7 +35,7 @@ typedef struct s_chunk
 } t_chunk;
 
 extern t_zone *anchor;
-
+extern int malloc_limit;
 t_zone	*create_zone(size_t);
 t_zone	*get_free(short int, size_t);
 t_zone	*get_last();
@@ -38,6 +43,8 @@ t_chunk *crt_new(size_t, t_zone *);
 t_chunk	*get_chunk(void*);
 void	free(void *);
 void	*realloc(void *, size_t);
+void	*reallocf(void *, size_t);
 void	*malloc(size_t);
+void	*calloc(size_t, size_t);
 void	show_alloc_mem();
 #endif

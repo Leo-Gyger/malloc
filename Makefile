@@ -1,6 +1,9 @@
-NAME =	malloc.so
 DB =	lldb
-
+ifeq ($(HOSTTYPE),)
+	HOSTTYPE := libft_malloc_$(shell uname -m)_$(shell uname -s).so
+endif
+LIBFT = ./libft/libft.a
+MLIBFT			=		$(MAKE) -C libft
 CC = gcc
 CFLAGS =	-Wall -Wextra -Werror -fPIC -g
 OFLAGS = 	-shared
@@ -18,21 +21,24 @@ INCS = header/malloc.h
 OBJD =	obj
 OBJS =	$(patsubst $(SRCD)/%.c, $(OBJD)/%.o, $(SRCS))
 
-all : $(NAME)
-$(NAME):	$(OBJS)
-	@$(CC) $(OBJS) $(OFLAGS) -o $(NAME)
+all : $(HOSTTYPE)
+$(HOSTTYPE):	$(OBJS)
+	@$(MLIBFT) all
+	@$(CC) $(OBJS) ${LIBFT} $(OFLAGS) -o $(HOSTTYPE)
 
 $(OBJD)/%.o: $(SRCD)/%.c
 	@mkdir -p $(@D)
 	@$(CC) -c $(<) $(CFLAGS) -o $(@) -I $(INCD)
 
-db: $(NAME)
-	$(DB) $(NAME)
+db: $(HOSTTYPE)
+	$(DB) $(HOSTTYPE)
 
 clean:
+	@$(MLIBFT) clean
 	rm -rf $(OBJD)
 fclean: clean
-	@rm -rf $(NAME)
+	@$(MLIBFT) fclean
+	@rm -rf $(HOSTTYPE)
 
 re:	fclean all
 
