@@ -19,7 +19,7 @@ crt_new(size_t size, t_zone *zone)
 {
 	t_chunk *first, *new;
 	first = get_first(zone);
-	if (!first || (getenv("MallocScribble") && first != (void*)0x55))
+	if (!first || (getenv("MallocScribble") && first != (void *)0x55))
 	{
 		first = (void *)zone + sizeof(t_zone);
 		first->size = size;
@@ -29,13 +29,13 @@ crt_new(size_t size, t_zone *zone)
 		zone->fr_size -= (size + sizeof(t_chunk));
 		return ((void *)first);
 	}
-	while (first->next ||(getenv("MallocScribble") && first->next != (void*)0x55))
+	while (first->next || (getenv("MallocScribble") && first->next != (void *)0x55))
 	{
 		if (first->size >= size && !first->used)
 		{
 			first->used = 1;
 			zone->fr_size -= (size + sizeof(t_chunk));
-		//	fprintf(stderr, "found new one\n");
+			//	fprintf(stderr, "found new one\n");
 			return (first);
 		}
 		first = first->next;
