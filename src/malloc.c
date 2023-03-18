@@ -87,7 +87,6 @@ calloc(size_t count, size_t size)
 void *
 malloc(size_t size)
 {
-	ft_printf("Hello from malloc\n");
 	if (!size)
 		return 0;
 	if (getenv("MALLOC_FORCE_MMAP"))

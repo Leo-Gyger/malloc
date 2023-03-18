@@ -1,5 +1,5 @@
 NAME = libft.a
-CFLAGS = -Wall -Werror -Wextra -g -I. -c
+CFLAGS = -Wall -Wextra -g -I. -c
 CC = gcc
 FILES = ft_hexitoa.c\
 		ft_itoa.c\
